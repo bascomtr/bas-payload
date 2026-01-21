@@ -1,0 +1,8 @@
+export { HeroSlider } from './HeroSlider'
+export { FeaturedProducts } from './FeaturedProducts'
+export { FeaturedProjects } from './FeaturedProjects'
+export { LatestNews } from './LatestNews'
+export { Stats } from './Stats'
+export { CategoryGrid } from './CategoryGrid'
+export { AboutPreview } from './AboutPreview'
+export { TeamGrid, TeamGridCompact } from './TeamGrid'

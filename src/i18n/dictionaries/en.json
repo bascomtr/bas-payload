@@ -1,0 +1,78 @@
+{
+  "common": {
+    "home": "Home",
+    "products": "Products",
+    "projects": "Projects",
+    "news": "News",
+    "about": "About Us",
+    "contact": "Contact",
+    "services": "Services",
+    "team": "Team",
+    "search": "Search",
+    "readMore": "Read More",
+    "viewAll": "View All",
+    "backToHome": "Back to Home",
+    "loading": "Loading...",
+    "error": "Error",
+    "notFound": "Page Not Found"
+  },
+  "navigation": {
+    "menu": "Menu",
+    "close": "Close",
+    "language": "Language"
+  },
+  "breadcrumb": {
+    "home": "Home"
+  },
+  "products": {
+    "title": "Our Products",
+    "categories": "Categories",
+    "allProducts": "All Products",
+    "specifications": "Specifications",
+    "relatedProducts": "Related Products",
+    "requestQuote": "Request Quote",
+    "subcategories": "Subcategories",
+    "productsInCategory": "Products in This Category",
+    "noProducts": "No products found in this category."
+  },
+  "projects": {
+    "title": "Our Projects",
+    "categories": "Categories",
+    "allProjects": "All Projects",
+    "client": "Client",
+    "location": "Location",
+    "completionDate": "Completion Date",
+    "projectType": "Project Type"
+  },
+  "news": {
+    "title": "News",
+    "latestNews": "Latest News",
+    "allNews": "All News",
+    "publishedAt": "Published",
+    "author": "Author"
+  },
+  "contact": {
+    "title": "Contact",
+    "address": "Address",
+    "phone": "Phone",
+    "email": "Email",
+    "workingHours": "Working Hours",
+    "sendMessage": "Send Message",
+    "contactInfo": "Contact Information",
+    "formTitle": "Get in Touch",
+    "formSubtitle": "Contact us for your questions. We will get back to you as soon as possible."
+  },
+  "team": {
+    "title": "Our Team",
+    "subtitle": "Meet our experienced and expert team"
+  },
+  "footer": {
+    "copyright": "All Rights Reserved",
+    "quickLinks": "Quick Links",
+    "followUs": "Follow Us"
+  },
+  "seo": {
+    "defaultTitle": "BAS Industrial - Magnetic Separator Systems",
+    "defaultDescription": "BAS Industrial is a leading engineering company in ore beneficiation, metal separators and industrial separation solutions."
+  }
+}

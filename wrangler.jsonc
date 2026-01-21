@@ -1,5 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
+  "account_id": "be589282c3eab3977d430f7a8d9df11a",
   "main": ".open-next/worker.js",
   "name": "bas-payload",
   "compatibility_date": "2025-08-15",
@@ -20,7 +21,7 @@
       "binding": "D1",
       "database_id": "573af6c5-b30f-4a88-9a79-64602acf9237",
       "database_name": "bas-payload",
-      "remote": true,
+      // Local D1 for development, R2 stays remote
     },
   ],
   "services": [
@@ -33,7 +34,9 @@
   "r2_buckets": [
     {
       "binding": "R2",
-      "bucket_name": "bas-payload","preview_bucket_name": "bas-payload",
+      "bucket_name": "bas-payload",
+      "preview_bucket_name": "bas-payload",
+      "remote": true
     },
     // Create a R2 binding with the binding name "NEXT_INC_CACHE_R2_BUCKET"
     // {

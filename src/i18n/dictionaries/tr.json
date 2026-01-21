@@ -1,0 +1,78 @@
+{
+  "common": {
+    "home": "Ana Sayfa",
+    "products": "Ürünler",
+    "projects": "Projeler",
+    "news": "Haberler",
+    "about": "Hakkımızda",
+    "contact": "İletişim",
+    "services": "Hizmetler",
+    "team": "Ekip",
+    "search": "Ara",
+    "readMore": "Devamını Oku",
+    "viewAll": "Tümünü Gör",
+    "backToHome": "Ana Sayfaya Dön",
+    "loading": "Yükleniyor...",
+    "error": "Hata",
+    "notFound": "Sayfa Bulunamadı"
+  },
+  "navigation": {
+    "menu": "Menü",
+    "close": "Kapat",
+    "language": "Dil"
+  },
+  "breadcrumb": {
+    "home": "Ana Sayfa"
+  },
+  "products": {
+    "title": "Ürünlerimiz",
+    "categories": "Kategoriler",
+    "allProducts": "Tüm Ürünler",
+    "specifications": "Teknik Özellikler",
+    "relatedProducts": "İlgili Ürünler",
+    "requestQuote": "Teklif İste",
+    "subcategories": "Alt Kategoriler",
+    "productsInCategory": "Bu Kategorideki Ürünler",
+    "noProducts": "Bu kategoride henüz ürün bulunmamaktadır."
+  },
+  "projects": {
+    "title": "Projelerimiz",
+    "categories": "Kategoriler",
+    "allProjects": "Tüm Projeler",
+    "client": "Müşteri",
+    "location": "Konum",
+    "completionDate": "Tamamlanma Tarihi",
+    "projectType": "Proje Tipi"
+  },
+  "news": {
+    "title": "Haberler",
+    "latestNews": "Son Haberler",
+    "allNews": "Tüm Haberler",
+    "publishedAt": "Yayın Tarihi",
+    "author": "Yazar"
+  },
+  "contact": {
+    "title": "İletişim",
+    "address": "Adres",
+    "phone": "Telefon",
+    "email": "E-posta",
+    "workingHours": "Çalışma Saatleri",
+    "sendMessage": "Mesaj Gönder",
+    "contactInfo": "İletişim Bilgileri",
+    "formTitle": "Bize Ulaşın",
+    "formSubtitle": "Sorularınız için bize ulaşın. Size en kısa sürede dönüş yapacağız."
+  },
+  "team": {
+    "title": "Ekibimiz",
+    "subtitle": "Deneyimli ve uzman ekibimizle tanışın"
+  },
+  "footer": {
+    "copyright": "Tüm Hakları Saklıdır",
+    "quickLinks": "Hızlı Bağlantılar",
+    "followUs": "Bizi Takip Edin"
+  },
+  "seo": {
+    "defaultTitle": "BAS Endüstriyel - Manyetik Seperatör Sistemleri",
+    "defaultDescription": "BAS Endüstriyel, cevher zenginleştirme, metal seperatörler ve endüstriyel ayırma çözümleri alanında lider mühendislik şirketidir."
+  }
+}

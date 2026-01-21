@@ -69,6 +69,13 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
+    products: Product;
+    'product-categories': ProductCategory;
+    projects: Project;
+    'project-categories': ProjectCategory;
+    news: News;
+    pages: Page;
+    team: Team;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -78,6 +85,13 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    products: ProductsSelect<false> | ProductsSelect<true>;
+    'product-categories': ProductCategoriesSelect<false> | ProductCategoriesSelect<true>;
+    projects: ProjectsSelect<false> | ProjectsSelect<true>;
+    'project-categories': ProjectCategoriesSelect<false> | ProjectCategoriesSelect<true>;
+    news: NewsSelect<false> | NewsSelect<true>;
+    pages: PagesSelect<false> | PagesSelect<true>;
+    team: TeamSelect<false> | TeamSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -86,10 +100,23 @@ export interface Config {
   db: {
     defaultIDType: number;
   };
-  fallbackLocale: null;
-  globals: {};
-  globalsSelect: {};
-  locale: null;
+  fallbackLocale:
+    | ('false' | 'none' | 'null')
+    | false
+    | null
+    | ('tr' | 'en' | 'es' | 'ru')
+    | ('tr' | 'en' | 'es' | 'ru')[];
+  globals: {
+    'site-settings': SiteSetting;
+    navigation: Navigation;
+    homepage: Homepage;
+  };
+  globalsSelect: {
+    'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
+    navigation: NavigationSelect<false> | NavigationSelect<true>;
+    homepage: HomepageSelect<false> | HomepageSelect<true>;
+  };
+  locale: 'tr' | 'en' | 'es' | 'ru';
   user: User & {
     collection: 'users';
   };
@@ -122,6 +149,9 @@ export interface UserAuthOperations {
  */
 export interface User {
   id: number;
+  name?: string | null;
+  roles: ('admin' | 'editor' | 'viewer')[];
+  avatar?: (number | null) | Media;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -159,6 +189,515 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products".
+ */
+export interface Product {
+  id: number;
+  title: string;
+  /**
+   * SEO uyumlu URL. Otomatik oluşturulur veya manuel girilebilir.
+   */
+  slug: string;
+  /**
+   * Brief description for listings
+   */
+  shortDescription?: string | null;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  featuredImage?: (number | null) | Media;
+  gallery?:
+    | {
+        image: number | Media;
+        caption?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  specifications?:
+    | {
+        label: string;
+        value: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Arama motoru optimizasyonu için meta bilgileri
+   */
+  meta?: {
+    /**
+     * Sayfa başlığı (60 karakter önerilir)
+     */
+    title?: string | null;
+    /**
+     * Sayfa açıklaması (160 karakter önerilir)
+     */
+    description?: string | null;
+    /**
+     * Sosyal medya paylaşımlarında görünecek görsel (1200x630 önerilir)
+     */
+    image?: (number | null) | Media;
+    /**
+     * Virgülle ayrılmış anahtar kelimeler
+     */
+    keywords?: string | null;
+    /**
+     * Bu sayfa arama sonuçlarında görünmeyecek
+     */
+    noIndex?: boolean | null;
+  };
+  category: number | ProductCategory;
+  relatedProducts?: (number | Product)[] | null;
+  status: 'draft' | 'published';
+  order?: number | null;
+  /**
+   * Show on homepage
+   */
+  featured?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "product-categories".
+ */
+export interface ProductCategory {
+  id: number;
+  title: string;
+  /**
+   * SEO uyumlu URL. Otomatik oluşturulur veya manuel girilebilir.
+   */
+  slug: string;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Select parent category for hierarchy
+   */
+  parent?: (number | null) | ProductCategory;
+  image?: (number | null) | Media;
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects".
+ */
+export interface Project {
+  id: number;
+  title: string;
+  /**
+   * SEO uyumlu URL. Otomatik oluşturulur veya manuel girilebilir.
+   */
+  slug: string;
+  /**
+   * Brief description for listings
+   */
+  excerpt?: string | null;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  client?: string | null;
+  location?: string | null;
+  completionDate?: string | null;
+  projectType?: ('turnkey' | 'equipment' | 'consultancy' | 'service') | null;
+  highlights?:
+    | {
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  featuredImage?: (number | null) | Media;
+  gallery?:
+    | {
+        image: number | Media;
+        caption?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Arama motoru optimizasyonu için meta bilgileri
+   */
+  meta?: {
+    /**
+     * Sayfa başlığı (60 karakter önerilir)
+     */
+    title?: string | null;
+    /**
+     * Sayfa açıklaması (160 karakter önerilir)
+     */
+    description?: string | null;
+    /**
+     * Sosyal medya paylaşımlarında görünecek görsel (1200x630 önerilir)
+     */
+    image?: (number | null) | Media;
+    /**
+     * Virgülle ayrılmış anahtar kelimeler
+     */
+    keywords?: string | null;
+    /**
+     * Bu sayfa arama sonuçlarında görünmeyecek
+     */
+    noIndex?: boolean | null;
+  };
+  category: number | ProjectCategory;
+  status: 'draft' | 'published';
+  /**
+   * Show on homepage
+   */
+  featured?: boolean | null;
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "project-categories".
+ */
+export interface ProjectCategory {
+  id: number;
+  title: string;
+  /**
+   * SEO uyumlu URL. Otomatik oluşturulur veya manuel girilebilir.
+   */
+  slug: string;
+  description?: string | null;
+  image?: (number | null) | Media;
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "news".
+ */
+export interface News {
+  id: number;
+  title: string;
+  /**
+   * SEO uyumlu URL. Otomatik oluşturulur veya manuel girilebilir.
+   */
+  slug: string;
+  /**
+   * Brief description for listings (max 200 characters)
+   */
+  excerpt?: string | null;
+  content?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  featuredImage?: (number | null) | Media;
+  /**
+   * Arama motoru optimizasyonu için meta bilgileri
+   */
+  meta?: {
+    /**
+     * Sayfa başlığı (60 karakter önerilir)
+     */
+    title?: string | null;
+    /**
+     * Sayfa açıklaması (160 karakter önerilir)
+     */
+    description?: string | null;
+    /**
+     * Sosyal medya paylaşımlarında görünecek görsel (1200x630 önerilir)
+     */
+    image?: (number | null) | Media;
+    /**
+     * Virgülle ayrılmış anahtar kelimeler
+     */
+    keywords?: string | null;
+    /**
+     * Bu sayfa arama sonuçlarında görünmeyecek
+     */
+    noIndex?: boolean | null;
+  };
+  publishedAt: string;
+  author?: (number | null) | User;
+  status: 'draft' | 'published';
+  tags?: string[] | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages".
+ */
+export interface Page {
+  id: number;
+  title: string;
+  /**
+   * SEO uyumlu URL. Otomatik oluşturulur veya manuel girilebilir.
+   */
+  slug: string;
+  heroType?: ('none' | 'simple' | 'withImage' | 'fullWidth') | null;
+  heroImage?: (number | null) | Media;
+  heroSubtitle?: string | null;
+  content?:
+    | (
+        | {
+            heading: string;
+            subheading?: string | null;
+            backgroundImage?: (number | null) | Media;
+            /**
+             * Optional video background (overrides image)
+             */
+            backgroundVideo?: (number | null) | Media;
+            overlay?: ('none' | 'light' | 'medium' | 'dark') | null;
+            buttons?:
+              | {
+                  label: string;
+                  link: string;
+                  variant?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            height?: ('full' | 'large' | 'medium') | null;
+            textAlign?: ('left' | 'center' | 'right') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'hero';
+          }
+        | {
+            columns?: ('one' | 'two' | 'twoWideLeft' | 'twoWideRight' | 'three') | null;
+            contentItems?:
+              | {
+                  content: {
+                    root: {
+                      type: string;
+                      children: {
+                        type: any;
+                        version: number;
+                        [k: string]: unknown;
+                      }[];
+                      direction: ('ltr' | 'rtl') | null;
+                      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                      indent: number;
+                      version: number;
+                    };
+                    [k: string]: unknown;
+                  };
+                  id?: string | null;
+                }[]
+              | null;
+            backgroundColor?: ('white' | 'lightGray' | 'dark' | 'primary') | null;
+            paddingTop?: ('none' | 'small' | 'medium' | 'large') | null;
+            paddingBottom?: ('none' | 'small' | 'medium' | 'large') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'content';
+          }
+        | {
+            heading: string;
+            description?: string | null;
+            buttons?:
+              | {
+                  label: string;
+                  link: string;
+                  variant?: ('primary' | 'secondary' | 'outline') | null;
+                  icon?: ('none' | 'arrowRight' | 'phone' | 'email' | 'download') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            backgroundImage?: (number | null) | Media;
+            style?: ('default' | 'centered' | 'withImage' | 'fullWidth') | null;
+            backgroundColor?: ('primary' | 'secondary' | 'dark' | 'light') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'cta';
+          }
+        | {
+            heading?: string | null;
+            description?: string | null;
+            images: {
+              image: number | Media;
+              caption?: string | null;
+              id?: string | null;
+            }[];
+            layout?: ('grid' | 'masonry' | 'carousel' | 'lightbox') | null;
+            columns?: ('2' | '3' | '4' | '5') | null;
+            gap?: ('none' | 'small' | 'medium' | 'large') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'gallery';
+          }
+        | {
+            heading?: string | null;
+            stats: {
+              /**
+               * e.g., 500+, 25, 100%
+               */
+              value: string;
+              label: string;
+              description?: string | null;
+              icon?: ('none' | 'users' | 'projects' | 'countries' | 'years' | 'products' | 'award') | null;
+              id?: string | null;
+            }[];
+            style?: ('default' | 'cards' | 'inline' | 'withBackground') | null;
+            backgroundImage?: (number | null) | Media;
+            animate?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'stats';
+          }
+        | {
+            heading?: string | null;
+            description?: string | null;
+            source?: ('auto' | 'featured' | 'category' | 'manual') | null;
+            category?: (number | null) | ProductCategory;
+            products?: (number | Product)[] | null;
+            limit?: number | null;
+            columns?: ('2' | '3' | '4') | null;
+            showCTA?: boolean | null;
+            ctaLink?: string | null;
+            ctaLabel?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'productGrid';
+          }
+        | {
+            heading?: string | null;
+            description?: string | null;
+            items: {
+              year: string;
+              title: string;
+              description?: string | null;
+              image?: (number | null) | Media;
+              id?: string | null;
+            }[];
+            layout?: ('alternating' | 'left' | 'right' | 'horizontal') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'timeline';
+          }
+        | {
+            heading?: string | null;
+            testimonials: {
+              quote: string;
+              author: string;
+              position?: string | null;
+              company?: string | null;
+              avatar?: (number | null) | Media;
+              logo?: (number | null) | Media;
+              id?: string | null;
+            }[];
+            layout?: ('carousel' | 'grid' | 'single') | null;
+            autoplay?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'testimonials';
+          }
+      )[]
+    | null;
+  /**
+   * Arama motoru optimizasyonu için meta bilgileri
+   */
+  meta?: {
+    /**
+     * Sayfa başlığı (60 karakter önerilir)
+     */
+    title?: string | null;
+    /**
+     * Sayfa açıklaması (160 karakter önerilir)
+     */
+    description?: string | null;
+    /**
+     * Sosyal medya paylaşımlarında görünecek görsel (1200x630 önerilir)
+     */
+    image?: (number | null) | Media;
+    /**
+     * Virgülle ayrılmış anahtar kelimeler
+     */
+    keywords?: string | null;
+    /**
+     * Bu sayfa arama sonuçlarında görünmeyecek
+     */
+    noIndex?: boolean | null;
+  };
+  status: 'draft' | 'published';
+  parent?: (number | null) | Page;
+  showInNav?: boolean | null;
+  navOrder?: number | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "team".
+ */
+export interface Team {
+  id: number;
+  name: string;
+  position: string;
+  department?: ('management' | 'engineering' | 'sales' | 'service' | 'administration') | null;
+  bio?: string | null;
+  photo?: (number | null) | Media;
+  contact?: {
+    email?: string | null;
+    phone?: string | null;
+    /**
+     * LinkedIn profil URL
+     */
+    linkedin?: string | null;
+  };
+  order?: number | null;
+  isActive?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -188,6 +727,34 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'products';
+        value: number | Product;
+      } | null)
+    | ({
+        relationTo: 'product-categories';
+        value: number | ProductCategory;
+      } | null)
+    | ({
+        relationTo: 'projects';
+        value: number | Project;
+      } | null)
+    | ({
+        relationTo: 'project-categories';
+        value: number | ProjectCategory;
+      } | null)
+    | ({
+        relationTo: 'news';
+        value: number | News;
+      } | null)
+    | ({
+        relationTo: 'pages';
+        value: number | Page;
+      } | null)
+    | ({
+        relationTo: 'team';
+        value: number | Team;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -236,6 +803,9 @@ export interface PayloadMigration {
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
+  name?: T;
+  roles?: T;
+  avatar?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -268,6 +838,347 @@ export interface MediaSelect<T extends boolean = true> {
   filesize?: T;
   width?: T;
   height?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products_select".
+ */
+export interface ProductsSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  shortDescription?: T;
+  description?: T;
+  featuredImage?: T;
+  gallery?:
+    | T
+    | {
+        image?: T;
+        caption?: T;
+        id?: T;
+      };
+  specifications?:
+    | T
+    | {
+        label?: T;
+        value?: T;
+        id?: T;
+      };
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        keywords?: T;
+        noIndex?: T;
+      };
+  category?: T;
+  relatedProducts?: T;
+  status?: T;
+  order?: T;
+  featured?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "product-categories_select".
+ */
+export interface ProductCategoriesSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  description?: T;
+  parent?: T;
+  image?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects_select".
+ */
+export interface ProjectsSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  excerpt?: T;
+  description?: T;
+  client?: T;
+  location?: T;
+  completionDate?: T;
+  projectType?: T;
+  highlights?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  featuredImage?: T;
+  gallery?:
+    | T
+    | {
+        image?: T;
+        caption?: T;
+        id?: T;
+      };
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        keywords?: T;
+        noIndex?: T;
+      };
+  category?: T;
+  status?: T;
+  featured?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "project-categories_select".
+ */
+export interface ProjectCategoriesSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  description?: T;
+  image?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "news_select".
+ */
+export interface NewsSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  excerpt?: T;
+  content?: T;
+  featuredImage?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        keywords?: T;
+        noIndex?: T;
+      };
+  publishedAt?: T;
+  author?: T;
+  status?: T;
+  tags?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages_select".
+ */
+export interface PagesSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  heroType?: T;
+  heroImage?: T;
+  heroSubtitle?: T;
+  content?:
+    | T
+    | {
+        hero?:
+          | T
+          | {
+              heading?: T;
+              subheading?: T;
+              backgroundImage?: T;
+              backgroundVideo?: T;
+              overlay?: T;
+              buttons?:
+                | T
+                | {
+                    label?: T;
+                    link?: T;
+                    variant?: T;
+                    id?: T;
+                  };
+              height?: T;
+              textAlign?: T;
+              id?: T;
+              blockName?: T;
+            };
+        content?:
+          | T
+          | {
+              columns?: T;
+              contentItems?:
+                | T
+                | {
+                    content?: T;
+                    id?: T;
+                  };
+              backgroundColor?: T;
+              paddingTop?: T;
+              paddingBottom?: T;
+              id?: T;
+              blockName?: T;
+            };
+        cta?:
+          | T
+          | {
+              heading?: T;
+              description?: T;
+              buttons?:
+                | T
+                | {
+                    label?: T;
+                    link?: T;
+                    variant?: T;
+                    icon?: T;
+                    id?: T;
+                  };
+              backgroundImage?: T;
+              style?: T;
+              backgroundColor?: T;
+              id?: T;
+              blockName?: T;
+            };
+        gallery?:
+          | T
+          | {
+              heading?: T;
+              description?: T;
+              images?:
+                | T
+                | {
+                    image?: T;
+                    caption?: T;
+                    id?: T;
+                  };
+              layout?: T;
+              columns?: T;
+              gap?: T;
+              id?: T;
+              blockName?: T;
+            };
+        stats?:
+          | T
+          | {
+              heading?: T;
+              stats?:
+                | T
+                | {
+                    value?: T;
+                    label?: T;
+                    description?: T;
+                    icon?: T;
+                    id?: T;
+                  };
+              style?: T;
+              backgroundImage?: T;
+              animate?: T;
+              id?: T;
+              blockName?: T;
+            };
+        productGrid?:
+          | T
+          | {
+              heading?: T;
+              description?: T;
+              source?: T;
+              category?: T;
+              products?: T;
+              limit?: T;
+              columns?: T;
+              showCTA?: T;
+              ctaLink?: T;
+              ctaLabel?: T;
+              id?: T;
+              blockName?: T;
+            };
+        timeline?:
+          | T
+          | {
+              heading?: T;
+              description?: T;
+              items?:
+                | T
+                | {
+                    year?: T;
+                    title?: T;
+                    description?: T;
+                    image?: T;
+                    id?: T;
+                  };
+              layout?: T;
+              id?: T;
+              blockName?: T;
+            };
+        testimonials?:
+          | T
+          | {
+              heading?: T;
+              testimonials?:
+                | T
+                | {
+                    quote?: T;
+                    author?: T;
+                    position?: T;
+                    company?: T;
+                    avatar?: T;
+                    logo?: T;
+                    id?: T;
+                  };
+              layout?: T;
+              autoplay?: T;
+              id?: T;
+              blockName?: T;
+            };
+      };
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        keywords?: T;
+        noIndex?: T;
+      };
+  status?: T;
+  parent?: T;
+  showInNav?: T;
+  navOrder?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "team_select".
+ */
+export interface TeamSelect<T extends boolean = true> {
+  name?: T;
+  position?: T;
+  department?: T;
+  bio?: T;
+  photo?: T;
+  contact?:
+    | T
+    | {
+        email?: T;
+        phone?: T;
+        linkedin?: T;
+      };
+  order?: T;
+  isActive?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -308,6 +1219,671 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings".
+ */
+export interface SiteSetting {
+  id: number;
+  siteName: string;
+  siteDescription?: string | null;
+  logo?: (number | null) | Media;
+  logoDark?: (number | null) | Media;
+  favicon?: (number | null) | Media;
+  companyName?: string | null;
+  address?: string | null;
+  phone?: string | null;
+  email?: string | null;
+  workingHours?: string | null;
+  /**
+   * Paste Google Maps embed iframe code
+   */
+  mapEmbed?: string | null;
+  social?: {
+    facebook?: string | null;
+    twitter?: string | null;
+    linkedin?: string | null;
+    instagram?: string | null;
+    youtube?: string | null;
+  };
+  defaultMetaTitle?: string | null;
+  defaultMetaDescription?: string | null;
+  defaultOGImage?: (number | null) | Media;
+  /**
+   * G-XXXXXXXXXX
+   */
+  googleAnalyticsId?: string | null;
+  /**
+   * GTM-XXXXXXX
+   */
+  googleTagManagerId?: string | null;
+  footerText?: string | null;
+  copyrightText?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "navigation".
+ */
+export interface Navigation {
+  id: number;
+  mainMenu?:
+    | {
+        label: string;
+        type?: ('internal' | 'external') | null;
+        internalLink?:
+          | ({
+              relationTo: 'pages';
+              value: number | Page;
+            } | null)
+          | ({
+              relationTo: 'products';
+              value: number | Product;
+            } | null)
+          | ({
+              relationTo: 'product-categories';
+              value: number | ProductCategory;
+            } | null)
+          | ({
+              relationTo: 'projects';
+              value: number | Project;
+            } | null)
+          | ({
+              relationTo: 'project-categories';
+              value: number | ProjectCategory;
+            } | null)
+          | ({
+              relationTo: 'news';
+              value: number | News;
+            } | null);
+        externalLink?: string | null;
+        openInNewTab?: boolean | null;
+        children?:
+          | {
+              label: string;
+              type?: ('internal' | 'external') | null;
+              internalLink?:
+                | ({
+                    relationTo: 'pages';
+                    value: number | Page;
+                  } | null)
+                | ({
+                    relationTo: 'products';
+                    value: number | Product;
+                  } | null)
+                | ({
+                    relationTo: 'product-categories';
+                    value: number | ProductCategory;
+                  } | null)
+                | ({
+                    relationTo: 'projects';
+                    value: number | Project;
+                  } | null)
+                | ({
+                    relationTo: 'project-categories';
+                    value: number | ProjectCategory;
+                  } | null)
+                | ({
+                    relationTo: 'news';
+                    value: number | News;
+                  } | null);
+              externalLink?: string | null;
+              openInNewTab?: boolean | null;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  footerColumns?:
+    | {
+        title: string;
+        links?:
+          | {
+              label: string;
+              type?: ('internal' | 'external') | null;
+              internalLink?:
+                | ({
+                    relationTo: 'pages';
+                    value: number | Page;
+                  } | null)
+                | ({
+                    relationTo: 'products';
+                    value: number | Product;
+                  } | null)
+                | ({
+                    relationTo: 'product-categories';
+                    value: number | ProductCategory;
+                  } | null)
+                | ({
+                    relationTo: 'projects';
+                    value: number | Project;
+                  } | null)
+                | ({
+                    relationTo: 'project-categories';
+                    value: number | ProjectCategory;
+                  } | null)
+                | ({
+                    relationTo: 'news';
+                    value: number | News;
+                  } | null);
+              externalLink?: string | null;
+              openInNewTab?: boolean | null;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  showTopBar?: boolean | null;
+  topBarContent?: string | null;
+  topBarLinks?:
+    | {
+        label: string;
+        type?: ('internal' | 'external') | null;
+        internalLink?:
+          | ({
+              relationTo: 'pages';
+              value: number | Page;
+            } | null)
+          | ({
+              relationTo: 'products';
+              value: number | Product;
+            } | null)
+          | ({
+              relationTo: 'product-categories';
+              value: number | ProductCategory;
+            } | null)
+          | ({
+              relationTo: 'projects';
+              value: number | Project;
+            } | null)
+          | ({
+              relationTo: 'project-categories';
+              value: number | ProjectCategory;
+            } | null)
+          | ({
+              relationTo: 'news';
+              value: number | News;
+            } | null);
+        externalLink?: string | null;
+        openInNewTab?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "homepage".
+ */
+export interface Homepage {
+  id: number;
+  heroType?: ('single' | 'slider' | 'video') | null;
+  heroSlides?:
+    | {
+        heading: string;
+        subheading?: string | null;
+        backgroundImage?: (number | null) | Media;
+        buttonLabel?: string | null;
+        buttonLink?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  heroVideo?: (number | null) | Media;
+  heroVideoHeading?: string | null;
+  content?:
+    | (
+        | {
+            heading: string;
+            subheading?: string | null;
+            backgroundImage?: (number | null) | Media;
+            /**
+             * Optional video background (overrides image)
+             */
+            backgroundVideo?: (number | null) | Media;
+            overlay?: ('none' | 'light' | 'medium' | 'dark') | null;
+            buttons?:
+              | {
+                  label: string;
+                  link: string;
+                  variant?: ('primary' | 'secondary' | 'outline') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            height?: ('full' | 'large' | 'medium') | null;
+            textAlign?: ('left' | 'center' | 'right') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'hero';
+          }
+        | {
+            columns?: ('one' | 'two' | 'twoWideLeft' | 'twoWideRight' | 'three') | null;
+            contentItems?:
+              | {
+                  content: {
+                    root: {
+                      type: string;
+                      children: {
+                        type: any;
+                        version: number;
+                        [k: string]: unknown;
+                      }[];
+                      direction: ('ltr' | 'rtl') | null;
+                      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                      indent: number;
+                      version: number;
+                    };
+                    [k: string]: unknown;
+                  };
+                  id?: string | null;
+                }[]
+              | null;
+            backgroundColor?: ('white' | 'lightGray' | 'dark' | 'primary') | null;
+            paddingTop?: ('none' | 'small' | 'medium' | 'large') | null;
+            paddingBottom?: ('none' | 'small' | 'medium' | 'large') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'content';
+          }
+        | {
+            heading: string;
+            description?: string | null;
+            buttons?:
+              | {
+                  label: string;
+                  link: string;
+                  variant?: ('primary' | 'secondary' | 'outline') | null;
+                  icon?: ('none' | 'arrowRight' | 'phone' | 'email' | 'download') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            backgroundImage?: (number | null) | Media;
+            style?: ('default' | 'centered' | 'withImage' | 'fullWidth') | null;
+            backgroundColor?: ('primary' | 'secondary' | 'dark' | 'light') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'cta';
+          }
+        | {
+            heading?: string | null;
+            description?: string | null;
+            images: {
+              image: number | Media;
+              caption?: string | null;
+              id?: string | null;
+            }[];
+            layout?: ('grid' | 'masonry' | 'carousel' | 'lightbox') | null;
+            columns?: ('2' | '3' | '4' | '5') | null;
+            gap?: ('none' | 'small' | 'medium' | 'large') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'gallery';
+          }
+        | {
+            heading?: string | null;
+            stats: {
+              /**
+               * e.g., 500+, 25, 100%
+               */
+              value: string;
+              label: string;
+              description?: string | null;
+              icon?: ('none' | 'users' | 'projects' | 'countries' | 'years' | 'products' | 'award') | null;
+              id?: string | null;
+            }[];
+            style?: ('default' | 'cards' | 'inline' | 'withBackground') | null;
+            backgroundImage?: (number | null) | Media;
+            animate?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'stats';
+          }
+        | {
+            heading?: string | null;
+            description?: string | null;
+            source?: ('auto' | 'featured' | 'category' | 'manual') | null;
+            category?: (number | null) | ProductCategory;
+            products?: (number | Product)[] | null;
+            limit?: number | null;
+            columns?: ('2' | '3' | '4') | null;
+            showCTA?: boolean | null;
+            ctaLink?: string | null;
+            ctaLabel?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'productGrid';
+          }
+        | {
+            heading?: string | null;
+            description?: string | null;
+            items: {
+              year: string;
+              title: string;
+              description?: string | null;
+              image?: (number | null) | Media;
+              id?: string | null;
+            }[];
+            layout?: ('alternating' | 'left' | 'right' | 'horizontal') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'timeline';
+          }
+        | {
+            heading?: string | null;
+            testimonials: {
+              quote: string;
+              author: string;
+              position?: string | null;
+              company?: string | null;
+              avatar?: (number | null) | Media;
+              logo?: (number | null) | Media;
+              id?: string | null;
+            }[];
+            layout?: ('carousel' | 'grid' | 'single') | null;
+            autoplay?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'testimonials';
+          }
+      )[]
+    | null;
+  showFeaturedProducts?: boolean | null;
+  featuredProductsTitle?: string | null;
+  featuredProductsLimit?: number | null;
+  showFeaturedProjects?: boolean | null;
+  featuredProjectsTitle?: string | null;
+  featuredProjectsLimit?: number | null;
+  showLatestNews?: boolean | null;
+  latestNewsTitle?: string | null;
+  latestNewsLimit?: number | null;
+  metaTitle?: string | null;
+  metaDescription?: string | null;
+  ogImage?: (number | null) | Media;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings_select".
+ */
+export interface SiteSettingsSelect<T extends boolean = true> {
+  siteName?: T;
+  siteDescription?: T;
+  logo?: T;
+  logoDark?: T;
+  favicon?: T;
+  companyName?: T;
+  address?: T;
+  phone?: T;
+  email?: T;
+  workingHours?: T;
+  mapEmbed?: T;
+  social?:
+    | T
+    | {
+        facebook?: T;
+        twitter?: T;
+        linkedin?: T;
+        instagram?: T;
+        youtube?: T;
+      };
+  defaultMetaTitle?: T;
+  defaultMetaDescription?: T;
+  defaultOGImage?: T;
+  googleAnalyticsId?: T;
+  googleTagManagerId?: T;
+  footerText?: T;
+  copyrightText?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "navigation_select".
+ */
+export interface NavigationSelect<T extends boolean = true> {
+  mainMenu?:
+    | T
+    | {
+        label?: T;
+        type?: T;
+        internalLink?: T;
+        externalLink?: T;
+        openInNewTab?: T;
+        children?:
+          | T
+          | {
+              label?: T;
+              type?: T;
+              internalLink?: T;
+              externalLink?: T;
+              openInNewTab?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  footerColumns?:
+    | T
+    | {
+        title?: T;
+        links?:
+          | T
+          | {
+              label?: T;
+              type?: T;
+              internalLink?: T;
+              externalLink?: T;
+              openInNewTab?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  showTopBar?: T;
+  topBarContent?: T;
+  topBarLinks?:
+    | T
+    | {
+        label?: T;
+        type?: T;
+        internalLink?: T;
+        externalLink?: T;
+        openInNewTab?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "homepage_select".
+ */
+export interface HomepageSelect<T extends boolean = true> {
+  heroType?: T;
+  heroSlides?:
+    | T
+    | {
+        heading?: T;
+        subheading?: T;
+        backgroundImage?: T;
+        buttonLabel?: T;
+        buttonLink?: T;
+        id?: T;
+      };
+  heroVideo?: T;
+  heroVideoHeading?: T;
+  content?:
+    | T
+    | {
+        hero?:
+          | T
+          | {
+              heading?: T;
+              subheading?: T;
+              backgroundImage?: T;
+              backgroundVideo?: T;
+              overlay?: T;
+              buttons?:
+                | T
+                | {
+                    label?: T;
+                    link?: T;
+                    variant?: T;
+                    id?: T;
+                  };
+              height?: T;
+              textAlign?: T;
+              id?: T;
+              blockName?: T;
+            };
+        content?:
+          | T
+          | {
+              columns?: T;
+              contentItems?:
+                | T
+                | {
+                    content?: T;
+                    id?: T;
+                  };
+              backgroundColor?: T;
+              paddingTop?: T;
+              paddingBottom?: T;
+              id?: T;
+              blockName?: T;
+            };
+        cta?:
+          | T
+          | {
+              heading?: T;
+              description?: T;
+              buttons?:
+                | T
+                | {
+                    label?: T;
+                    link?: T;
+                    variant?: T;
+                    icon?: T;
+                    id?: T;
+                  };
+              backgroundImage?: T;
+              style?: T;
+              backgroundColor?: T;
+              id?: T;
+              blockName?: T;
+            };
+        gallery?:
+          | T
+          | {
+              heading?: T;
+              description?: T;
+              images?:
+                | T
+                | {
+                    image?: T;
+                    caption?: T;
+                    id?: T;
+                  };
+              layout?: T;
+              columns?: T;
+              gap?: T;
+              id?: T;
+              blockName?: T;
+            };
+        stats?:
+          | T
+          | {
+              heading?: T;
+              stats?:
+                | T
+                | {
+                    value?: T;
+                    label?: T;
+                    description?: T;
+                    icon?: T;
+                    id?: T;
+                  };
+              style?: T;
+              backgroundImage?: T;
+              animate?: T;
+              id?: T;
+              blockName?: T;
+            };
+        productGrid?:
+          | T
+          | {
+              heading?: T;
+              description?: T;
+              source?: T;
+              category?: T;
+              products?: T;
+              limit?: T;
+              columns?: T;
+              showCTA?: T;
+              ctaLink?: T;
+              ctaLabel?: T;
+              id?: T;
+              blockName?: T;
+            };
+        timeline?:
+          | T
+          | {
+              heading?: T;
+              description?: T;
+              items?:
+                | T
+                | {
+                    year?: T;
+                    title?: T;
+                    description?: T;
+                    image?: T;
+                    id?: T;
+                  };
+              layout?: T;
+              id?: T;
+              blockName?: T;
+            };
+        testimonials?:
+          | T
+          | {
+              heading?: T;
+              testimonials?:
+                | T
+                | {
+                    quote?: T;
+                    author?: T;
+                    position?: T;
+                    company?: T;
+                    avatar?: T;
+                    logo?: T;
+                    id?: T;
+                  };
+              layout?: T;
+              autoplay?: T;
+              id?: T;
+              blockName?: T;
+            };
+      };
+  showFeaturedProducts?: T;
+  featuredProductsTitle?: T;
+  featuredProductsLimit?: T;
+  showFeaturedProjects?: T;
+  featuredProjectsTitle?: T;
+  featuredProjectsLimit?: T;
+  showLatestNews?: T;
+  latestNewsTitle?: T;
+  latestNewsLimit?: T;
+  metaTitle?: T;
+  metaDescription?: T;
+  ogImage?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

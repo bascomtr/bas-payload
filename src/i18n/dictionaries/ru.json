@@ -1,0 +1,78 @@
+{
+  "common": {
+    "home": "Главная",
+    "products": "Продукция",
+    "projects": "Проекты",
+    "news": "Новости",
+    "about": "О нас",
+    "contact": "Контакты",
+    "services": "Услуги",
+    "team": "Команда",
+    "search": "Поиск",
+    "readMore": "Читать далее",
+    "viewAll": "Смотреть все",
+    "backToHome": "На главную",
+    "loading": "Загрузка...",
+    "error": "Ошибка",
+    "notFound": "Страница не найдена"
+  },
+  "navigation": {
+    "menu": "Меню",
+    "close": "Закрыть",
+    "language": "Язык"
+  },
+  "breadcrumb": {
+    "home": "Главная"
+  },
+  "products": {
+    "title": "Наша продукция",
+    "categories": "Категории",
+    "allProducts": "Вся продукция",
+    "specifications": "Характеристики",
+    "relatedProducts": "Похожие продукты",
+    "requestQuote": "Запросить цену",
+    "subcategories": "Подкатегории",
+    "productsInCategory": "Продукция в этой категории",
+    "noProducts": "В этой категории пока нет продуктов."
+  },
+  "projects": {
+    "title": "Наши проекты",
+    "categories": "Категории",
+    "allProjects": "Все проекты",
+    "client": "Клиент",
+    "location": "Местоположение",
+    "completionDate": "Дата завершения",
+    "projectType": "Тип проекта"
+  },
+  "news": {
+    "title": "Новости",
+    "latestNews": "Последние новости",
+    "allNews": "Все новости",
+    "publishedAt": "Опубликовано",
+    "author": "Автор"
+  },
+  "contact": {
+    "title": "Контакты",
+    "address": "Адрес",
+    "phone": "Телефон",
+    "email": "Эл. почта",
+    "workingHours": "Режим работы",
+    "sendMessage": "Отправить сообщение",
+    "contactInfo": "Контактная информация",
+    "formTitle": "Свяжитесь с нами",
+    "formSubtitle": "Свяжитесь с нами по вашим вопросам. Мы ответим вам в ближайшее время."
+  },
+  "team": {
+    "title": "Наша команда",
+    "subtitle": "Познакомьтесь с нашей опытной и экспертной командой"
+  },
+  "footer": {
+    "copyright": "Все права защищены",
+    "quickLinks": "Быстрые ссылки",
+    "followUs": "Подписывайтесь"
+  },
+  "seo": {
+    "defaultTitle": "BAS Industrial - Магнитные сепараторные системы",
+    "defaultDescription": "BAS Industrial - ведущая инжиниринговая компания в области обогащения руды, металлических сепараторов и промышленных решений для разделения."
+  }
+}

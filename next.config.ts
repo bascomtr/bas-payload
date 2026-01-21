@@ -6,6 +6,20 @@ const nextConfig = {
   // Read more: https://opennext.js.org/cloudflare/howtos/workerd
   serverExternalPackages: ['jose', 'pg-cloudflare'],
 
+  // External images configuration
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https' as const,
+        hostname: 'images.unsplash.com',
+      },
+      {
+        protocol: 'https' as const,
+        hostname: 'images.pexels.com',
+      },
+    ],
+  },
+
   // Your Next.js config here
   webpack: (webpackConfig: any) => {
     webpackConfig.resolve.extensionAlias = {

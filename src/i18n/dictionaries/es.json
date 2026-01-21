@@ -1,0 +1,78 @@
+{
+  "common": {
+    "home": "Inicio",
+    "products": "Productos",
+    "projects": "Proyectos",
+    "news": "Noticias",
+    "about": "Nosotros",
+    "contact": "Contacto",
+    "services": "Servicios",
+    "team": "Equipo",
+    "search": "Buscar",
+    "readMore": "Leer más",
+    "viewAll": "Ver todo",
+    "backToHome": "Volver al inicio",
+    "loading": "Cargando...",
+    "error": "Error",
+    "notFound": "Página no encontrada"
+  },
+  "navigation": {
+    "menu": "Menú",
+    "close": "Cerrar",
+    "language": "Idioma"
+  },
+  "breadcrumb": {
+    "home": "Inicio"
+  },
+  "products": {
+    "title": "Nuestros Productos",
+    "categories": "Categorías",
+    "allProducts": "Todos los productos",
+    "specifications": "Especificaciones",
+    "relatedProducts": "Productos relacionados",
+    "requestQuote": "Solicitar presupuesto",
+    "subcategories": "Subcategorías",
+    "productsInCategory": "Productos en esta categoría",
+    "noProducts": "No se encontraron productos en esta categoría."
+  },
+  "projects": {
+    "title": "Nuestros Proyectos",
+    "categories": "Categorías",
+    "allProjects": "Todos los proyectos",
+    "client": "Cliente",
+    "location": "Ubicación",
+    "completionDate": "Fecha de finalización",
+    "projectType": "Tipo de proyecto"
+  },
+  "news": {
+    "title": "Noticias",
+    "latestNews": "Últimas noticias",
+    "allNews": "Todas las noticias",
+    "publishedAt": "Publicado",
+    "author": "Autor"
+  },
+  "contact": {
+    "title": "Contacto",
+    "address": "Dirección",
+    "phone": "Teléfono",
+    "email": "Correo electrónico",
+    "workingHours": "Horario de trabajo",
+    "sendMessage": "Enviar mensaje",
+    "contactInfo": "Información de contacto",
+    "formTitle": "Contáctenos",
+    "formSubtitle": "Contáctenos para sus preguntas. Le responderemos lo antes posible."
+  },
+  "team": {
+    "title": "Nuestro Equipo",
+    "subtitle": "Conozca a nuestro equipo experimentado y experto"
+  },
+  "footer": {
+    "copyright": "Todos los derechos reservados",
+    "quickLinks": "Enlaces rápidos",
+    "followUs": "Síguenos"
+  },
+  "seo": {
+    "defaultTitle": "BAS Industrial - Sistemas de Separadores Magnéticos",
+    "defaultDescription": "BAS Industrial es una empresa de ingeniería líder en beneficio de minerales, separadores de metales y soluciones de separación industrial."
+  }
+}
