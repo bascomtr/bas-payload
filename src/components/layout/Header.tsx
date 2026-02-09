@@ -1,7 +1,10 @@
+'use client'
+
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { type Locale, locales, localeNames, defaultLocale, getTranslatedPath, getLocalePath } from '@/i18n/config'
-import type { Navigation, SiteSetting, Media } from '@/payload-types'
+import { type Locale, locales, localeNames, getTranslatedPath, getLocalePath } from '@/i18n/config'
+import type { Navigation, SiteSetting } from '@/payload-types'
 
 interface HeaderProps {
   locale: Locale
@@ -11,13 +14,57 @@ interface HeaderProps {
 }
 
 export function Header({ locale, navigation, siteSettings, dict }: HeaderProps) {
+  const [isTopBarVisible, setIsTopBarVisible] = useState(true)
+  const [lastScrollY, setLastScrollY] = useState(0)
+  const topBarRef = useRef<HTMLDivElement>(null)
+  const [topBarHeight, setTopBarHeight] = useState(0)
+
+  useEffect(() => {
+    // Measure topbar height
+    if (topBarRef.current) {
+      setTopBarHeight(topBarRef.current.offsetHeight)
+    }
+  }, [])
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY
+      
+      // Show topbar when scrolling up, hide when scrolling down
+      if (currentScrollY < lastScrollY || currentScrollY < 50) {
+        setIsTopBarVisible(true)
+      } else if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        setIsTopBarVisible(false)
+      }
+      
+      setLastScrollY(currentScrollY)
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [lastScrollY])
+
+  const hasTopBar = navigation?.showTopBar
+
   return (
-    <header className="header">
+    <header 
+      className="header transition-transform duration-300 ease-in-out"
+      style={{
+        transform: !isTopBarVisible && hasTopBar ? `translateY(-${topBarHeight}px)` : 'translateY(0)'
+      }}
+    >
       {/* Top Bar */}
-      {navigation?.showTopBar && (
-        <div className="topbar">
+      {hasTopBar && (
+        <div 
+          ref={topBarRef}
+          className="topbar"
+        >
           <div className="container flex justify-between items-center">
             <div className="flex items-center gap-6">
+              {/* Top bar content */}
+              {navigation.topBarContent && (
+                <span className="text-sm hidden md:block">{navigation.topBarContent}</span>
+              )}
               {siteSettings?.phone && (
                 <a href={`tel:${siteSettings.phone}`} className="topbar-link">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -84,7 +131,7 @@ export function Header({ locale, navigation, siteSettings, dict }: HeaderProps) 
       )}
 
       {/* Main Header */}
-      <div className="main-header">
+      <div className={`main-header transition-shadow duration-300 ${!isTopBarVisible && hasTopBar ? 'shadow-lg' : ''}`}>
         <div className="container flex items-center justify-between">
           {/* Logo - Always use SVG from public folder */}
           <Link href={getLocalePath(locale)} className="logo">

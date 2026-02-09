@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { type Locale, getTranslatedPath, getLocalePath } from '@/i18n/config'
+import { getMediaUrl } from '@/lib/media'
 import type { News, Media } from '@/payload-types'
 
 interface NewsCardProps {
@@ -20,15 +21,16 @@ function formatDate(dateString: string, locale: Locale): string {
 export function NewsCard({ news, locale }: NewsCardProps) {
   const featuredImage = news.featuredImage as Media | undefined
   const href = getLocalePath(locale, `/${getTranslatedPath('news', locale)}/${news.slug}`)
+  const imageUrl = getMediaUrl(featuredImage)
 
   return (
     <Link href={href} className="card group">
       {/* Image */}
       <div className="relative aspect-video overflow-hidden bg-gray-100">
-        {featuredImage?.url ? (
+        {imageUrl ? (
           <Image
-            src={featuredImage.url}
-            alt={featuredImage.alt || news.title || ''}
+            src={imageUrl}
+            alt={featuredImage?.alt || news.title || ''}
             fill
             className="object-cover transition-transform duration-500 group-hover:scale-105"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"

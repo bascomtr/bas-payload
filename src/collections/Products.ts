@@ -116,6 +116,50 @@ export const Products: CollectionConfig = {
                 },
               ],
             },
+            {
+              name: 'videos',
+              type: 'array',
+              label: {
+                en: 'Videos',
+                tr: 'Videolar',
+              },
+              labels: {
+                singular: {
+                  en: 'Video',
+                  tr: 'Video',
+                },
+                plural: {
+                  en: 'Videos',
+                  tr: 'Videolar',
+                },
+              },
+              fields: [
+                {
+                  name: 'title',
+                  type: 'text',
+                  localized: true,
+                  label: {
+                    en: 'Title',
+                    tr: 'Başlık',
+                  },
+                },
+                {
+                  name: 'youtubeId',
+                  type: 'text',
+                  required: true,
+                  label: {
+                    en: 'YouTube Video ID',
+                    tr: 'YouTube Video ID',
+                  },
+                  admin: {
+                    description: {
+                      en: 'e.g. dQw4w9WgXcQ from youtube.com/watch?v=dQw4w9WgXcQ',
+                      tr: 'Örn: youtube.com/watch?v=dQw4w9WgXcQ adresinden dQw4w9WgXcQ',
+                    },
+                  },
+                },
+              ],
+            },
           ],
         },
         {

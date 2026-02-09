@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { type Locale, getTranslatedPath, getLocalePath } from '@/i18n/config'
+import { getMediaUrl } from '@/lib/media'
 import type { Project, Media, ProjectCategory } from '@/payload-types'
 
 interface ProjectCardProps {
@@ -12,15 +13,16 @@ export function ProjectCard({ project, locale }: ProjectCardProps) {
   const featuredImage = project.featuredImage as Media | undefined
   const category = project.category as ProjectCategory | undefined
   const href = getLocalePath(locale, `/${getTranslatedPath('projects', locale)}/${project.slug}`)
+  const imageUrl = getMediaUrl(featuredImage)
 
   return (
     <Link href={href} className="block relative rounded-xl overflow-hidden shadow-md group">
       {/* Image */}
       <div className="relative aspect-[16/10] overflow-hidden bg-gray-100">
-        {featuredImage?.url ? (
+        {imageUrl ? (
           <Image
-            src={featuredImage.url}
-            alt={featuredImage.alt || project.title || ''}
+            src={imageUrl}
+            alt={featuredImage?.alt || project.title || ''}
             fill
             className="object-cover transition-transform duration-700 group-hover:scale-110"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"

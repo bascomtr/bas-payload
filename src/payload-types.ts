@@ -225,6 +225,16 @@ export interface Product {
         id?: string | null;
       }[]
     | null;
+  videos?:
+    | {
+        title?: string | null;
+        /**
+         * e.g. dQw4w9WgXcQ from youtube.com/watch?v=dQw4w9WgXcQ
+         */
+        youtubeId: string;
+        id?: string | null;
+      }[]
+    | null;
   specifications?:
     | {
         label: string;
@@ -280,6 +290,10 @@ export interface ProductCategory {
    * SEO uyumlu URL. Otomatik oluşturulur veya manuel girilebilir.
    */
   slug: string;
+  /**
+   * Brief description shown on hover in category cards
+   */
+  shortDescription?: string | null;
   description?: {
     root: {
       type: string;
@@ -856,6 +870,13 @@ export interface ProductsSelect<T extends boolean = true> {
         caption?: T;
         id?: T;
       };
+  videos?:
+    | T
+    | {
+        title?: T;
+        youtubeId?: T;
+        id?: T;
+      };
   specifications?:
     | T
     | {
@@ -888,6 +909,7 @@ export interface ProductsSelect<T extends boolean = true> {
 export interface ProductCategoriesSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
+  shortDescription?: T;
   description?: T;
   parent?: T;
   image?: T;

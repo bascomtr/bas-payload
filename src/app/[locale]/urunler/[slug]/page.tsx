@@ -1,12 +1,14 @@
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import Image from 'next/image'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { type Locale, locales, getTranslatedPath } from '@/i18n/config'
 import { getDictionary } from '@/i18n/dictionaries'
 import { RichText } from '@/components/ui/RichText'
 import { ProductCard } from '@/components/cards/ProductCard'
+import { ProductGallery } from '@/components/ui/ProductGallery'
+import { YouTubeVideo } from '@/components/ui/YouTubeVideo'
+import { getMediaUrl } from '@/lib/media'
 import type { Product, Media } from '@/payload-types'
 
 interface ProductPageProps {
@@ -103,103 +105,150 @@ export default async function ProductPage({ params }: ProductPageProps) {
       })
     : null
 
+  // Build gallery images array: featured image first, then gallery items
+  const galleryImages: Array<{ url: string; alt: string }> = []
+
   const featuredImage = product.featuredImage as Media | undefined
+  const featuredImageUrl = getMediaUrl(featuredImage)
+  if (featuredImageUrl) {
+    galleryImages.push({
+      url: featuredImageUrl,
+      alt: featuredImage?.alt || product.title || '',
+    })
+  }
+
+  if (product.gallery) {
+    for (const item of product.gallery) {
+      const image = item.image as Media
+      const imageUrl = getMediaUrl(image)
+      if (imageUrl) {
+        galleryImages.push({
+          url: imageUrl,
+          alt: item.caption || image?.alt || '',
+        })
+      }
+    }
+  }
+
+  // Get category info for breadcrumb and header
+  const category = product.category as { title?: string; slug?: string } | undefined
 
   return (
-    <article className="section">
-      <div className="container">
-        <div className="grid-2 gap-12">
-          {/* Product Images */}
-          <div>
-            {featuredImage && (
-              <div className="relative aspect-square rounded-lg overflow-hidden bg-gray-100">
-                <Image
-                  src={featuredImage.url || ''}
-                  alt={featuredImage.alt || product.title || ''}
-                  fill
-                  className="object-cover"
-                  priority
-                />
-              </div>
-            )}
+    <article>
+      {/* Page Header - Category Name + Breadcrumb */}
+      <div className="product-page-header">
+        <div className="container">
+          <h1 className="product-page-header-title">
+            {category?.title || dict.products.title}
+          </h1>
+          <nav className="breadcrumb">
+            <a href={`/${locale}`}>BAS&reg;</a>
+            <span className="breadcrumb-separator">&gt;</span>
+            <a href={`/${locale}/urunler`}>{category?.title || dict.products.title}</a>
+            <span className="breadcrumb-separator">&gt;</span>
+            <span>{product.title}</span>
+          </nav>
+        </div>
+      </div>
 
-            {/* Gallery */}
-            {product.gallery && product.gallery.length > 0 && (
-              <div className="grid grid-cols-4 gap-2 mt-4">
-                {product.gallery.map((item, index) => {
-                  const image = item.image as Media
-                  return (
-                    <div
-                      key={index}
-                      className="relative aspect-square rounded overflow-hidden bg-gray-100"
-                    >
-                      <Image
-                        src={image?.url || ''}
-                        alt={item.caption || ''}
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                  )
-                })}
+      {/* Product Content: Image Left + Info Right */}
+      <div className="section">
+        <div className="container">
+          <div className="pd-layout">
+            {/* Left Column: Featured Image + Gallery Grid */}
+            <div className="pd-gallery-col">
+              <ProductGallery
+                images={galleryImages}
+                productTitle={product.title || ''}
+              />
+            </div>
+
+            {/* Right Column: Title + Description */}
+            <div className="pd-info-col">
+              <h2 className="pd-title">{product.title}</h2>
+
+              {product.shortDescription && (
+                <p className="pd-short-desc">{product.shortDescription}</p>
+              )}
+
+              {/* Specifications */}
+              {product.specifications && product.specifications.length > 0 && (
+                <div className="pd-specs">
+                  <h3 className="pd-specs-heading">
+                    {dict.products.specifications}
+                  </h3>
+                  <table className="pd-specs-table">
+                    <tbody>
+                      {product.specifications.map((spec, index) => (
+                        <tr key={index}>
+                          <td className="pd-specs-label">{spec.label}</td>
+                          <td className="pd-specs-value">{spec.value}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+
+              {/* CTA */}
+              <div className="pd-cta">
+                <a
+                  href={`/${locale}/iletisim?product=${product.slug}`}
+                  className="btn btn-primary"
+                >
+                  {dict.products.requestQuote}
+                </a>
               </div>
-            )}
+            </div>
           </div>
+        </div>
+      </div>
 
-          {/* Product Info */}
-          <div>
-            <h1 className="text-3xl font-bold mb-4">{product.title}</h1>
-
-            {product.shortDescription && (
-              <p className="text-lg text-gray-600 mb-6">
-                {product.shortDescription}
-              </p>
-            )}
+      {/* Description Tab Section */}
+      {(product.description || (product.videos && product.videos.length > 0)) && (
+        <div className="pd-description-section">
+          <div className="container">
+            <div className="pd-tab-bar">
+              <span className="pd-tab pd-tab-active">
+                {locale === 'tr' ? 'Açıklama' : 'Description'}
+              </span>
+            </div>
 
             {product.description && (
-              <div className="rich-text mb-8">
+              <div className="pd-description-content rich-text">
                 <RichText content={product.description} />
               </div>
             )}
 
-            {/* Specifications */}
-            {product.specifications && product.specifications.length > 0 && (
-              <div className="mt-8">
-                <h2 className="text-xl font-bold mb-4">
-                  {dict.products.specifications}
-                </h2>
-                <table className="w-full">
-                  <tbody>
-                    {product.specifications.map((spec, index) => (
-                      <tr
-                        key={index}
-                        className={index % 2 === 0 ? 'bg-gray-50' : ''}
-                      >
-                        <td className="py-2 px-4 font-medium">{spec.label}</td>
-                        <td className="py-2 px-4">{spec.value}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+            {/* YouTube Videos */}
+            {product.videos && product.videos.length > 0 && (
+              <div className="pd-videos">
+                <h3 className="pd-videos-heading">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                  </svg>
+                  {locale === 'tr' ? 'İlgili Videolar' : 'Related Videos'}
+                </h3>
+                <div className="pd-videos-grid">
+                  {product.videos.map((video, index) => (
+                    <YouTubeVideo
+                      key={index}
+                      videoId={video.youtubeId}
+                      title={video.title || undefined}
+                    />
+                  ))}
+                </div>
               </div>
             )}
-
-            {/* CTA */}
-            <div className="mt-8">
-              <a
-                href={`/${locale}/iletisim?product=${product.slug}`}
-                className="btn btn-primary"
-              >
-                {dict.products.requestQuote}
-              </a>
-            </div>
           </div>
         </div>
+      )}
 
-        {/* Related Products */}
-        {relatedProducts && relatedProducts.docs.length > 0 && (
-          <section className="mt-16">
-            <h2 className="text-2xl font-bold mb-6">
+      {/* Related Products */}
+      {relatedProducts && relatedProducts.docs.length > 0 && (
+        <section className="section" style={{ backgroundColor: 'var(--color-gray-100)' }}>
+          <div className="container">
+            <h2 className="section-title" style={{ textAlign: 'center', marginBottom: '2rem' }}>
               {dict.products.relatedProducts}
             </h2>
             <div className="grid-4">
@@ -211,9 +260,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 />
               ))}
             </div>
-          </section>
-        )}
-      </div>
+          </div>
+        </section>
+      )}
     </article>
   )
 }

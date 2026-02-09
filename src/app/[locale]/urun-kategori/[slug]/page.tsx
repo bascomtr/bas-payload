@@ -9,6 +9,9 @@ import { ProductCard } from '@/components/cards/ProductCard'
 import { RichText } from '@/components/ui/RichText'
 import type { Media } from '@/payload-types'
 
+// Static banner for category pages (uploaded to Payload media id=257)
+const CATEGORY_BANNER_URL = '/api/media/file/category-banner.jpg'
+
 interface CategoryPageProps {
   params: Promise<{ locale: Locale; slug: string }>
   searchParams: Promise<{ page?: string }>
@@ -41,18 +44,12 @@ export async function generateMetadata({
     return { title: 'Not Found' }
   }
 
-  const image = category.image as Media | undefined
-
   return {
     title: category.title,
     description:
       typeof category.description === 'object'
         ? undefined
         : category.description,
-    openGraph: {
-      title: category.title || undefined,
-      images: image ? [{ url: image.url || '' }] : undefined,
-    },
     alternates: {
       languages: Object.fromEntries(
         locales.map((loc) => [loc, `/${loc}/urun-kategori/${slug}`])
@@ -89,6 +86,8 @@ export default async function CategoryPage({
     notFound()
   }
 
+  const shortDesc = category.shortDescription
+
   // Fetch products in this category
   const products = await payload.find({
     collection: 'products',
@@ -116,89 +115,79 @@ export default async function CategoryPage({
     depth: 1,
   })
 
-  const categoryImage = category.image as Media | undefined
-
   return (
-    <div className="section">
-      <div className="container">
-        {/* Category Header */}
-        <div className="mb-12">
-          {categoryImage && (
-            <div className="relative h-64 md:h-80 rounded-xl overflow-hidden mb-8">
-              <Image
-                src={categoryImage.url || ''}
-                alt={categoryImage.alt || category.title || ''}
-                fill
-                className="object-cover"
-                priority
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 p-8">
-                <h1 className="text-3xl md:text-4xl font-bold text-white">
-                  {category.title}
-                </h1>
-              </div>
-            </div>
-          )}
+    <>
+      {/* Hero Banner */}
+      <section className="cat-hero">
+        <Image
+          src={CATEGORY_BANNER_URL}
+          alt={category.title || ''}
+          fill
+          className="cat-hero__bg"
+          priority
+          sizes="100vw"
+        />
+        <div className="cat-hero__overlay" />
+        <div className="cat-hero__content">
+          <h1 className="cat-hero__title">{category.title}</h1>
+          {shortDesc && <p className="cat-hero__desc">{shortDesc}</p>}
+        </div>
+      </section>
 
-          {!categoryImage && (
-            <h1 className="text-3xl md:text-4xl font-bold mb-4">
-              {category.title}
-            </h1>
-          )}
-
-          {category.description && (
-            <div className="prose prose-lg max-w-none text-gray-600">
+      {/* Description */}
+      {category.description && (
+        <section className="cat-description">
+          <div className="container">
+            <div className="prose prose-lg max-w-none">
               <RichText content={category.description} />
             </div>
-          )}
-        </div>
+          </div>
+        </section>
+      )}
 
-        {/* Subcategories */}
-        {subcategories.docs.length > 0 && (
-          <div className="mb-12">
-            <h2 className="text-xl font-bold mb-4">
+      {/* Subcategories */}
+      {subcategories.docs.length > 0 && (
+        <section className="cat-subcategories">
+          <div className="container">
+            <h2 className="cat-subcategories__title">
               {locale === 'tr' ? 'Alt Kategoriler' : 'Subcategories'}
             </h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="cat-subcategories__grid">
               {subcategories.docs.map((subcat) => {
                 const subcatImage = subcat.image as Media | undefined
                 return (
                   <a
                     key={subcat.id}
                     href={`/${locale}/urun-kategori/${subcat.slug}`}
-                    className="group relative aspect-video rounded-lg overflow-hidden bg-gray-100"
+                    className="cat-subcard"
                   >
                     {subcatImage && (
                       <Image
                         src={subcatImage.url || ''}
                         alt={subcatImage.alt || subcat.title || ''}
                         fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-300"
+                        className="cat-subcard__img"
                       />
                     )}
-                    <div className="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-colors" />
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="text-white font-semibold text-center px-2">
-                        {subcat.title}
-                      </span>
-                    </div>
+                    <div className="cat-subcard__overlay" />
+                    <span className="cat-subcard__name">{subcat.title}</span>
                   </a>
                 )
               })}
             </div>
           </div>
-        )}
+        </section>
+      )}
 
-        {/* Products Grid */}
-        <div>
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-bold">
-              {dict.products?.allProducts || 'Ürünler'}
+      {/* Products */}
+      <section className="cat-products">
+        <div className="container">
+          <div className="cat-products__header">
+            <h2 className="cat-products__title">
+              {locale === 'tr' ? 'Tüm Ürünler' : 'All Products'}
             </h2>
-            <span className="text-gray-500">
-              {products.totalDocs}{' '}
-              {locale === 'tr' ? 'ürün' : 'products'}
+            <span className="cat-products__count">
+              {products.totalDocs} {locale === 'tr' ? 'ürün' : 'products'}
             </span>
           </div>
 
@@ -214,7 +203,6 @@ export default async function CategoryPage({
                 ))}
               </div>
 
-              {/* Pagination */}
               {products.totalPages > 1 && (
                 <div className="mt-8 flex justify-center gap-2">
                   {Array.from(
@@ -246,7 +234,7 @@ export default async function CategoryPage({
             </div>
           )}
         </div>
-      </div>
-    </div>
+      </section>
+    </>
   )
 }

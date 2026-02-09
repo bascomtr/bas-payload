@@ -6,6 +6,7 @@ import config from '@payload-config'
 import { type Locale, locales, getTranslatedPath } from '@/i18n/config'
 import { getDictionary } from '@/i18n/dictionaries'
 import { RichText } from '@/components/ui/RichText'
+import { getMediaUrl } from '@/lib/media'
 import type { Media, User } from '@/payload-types'
 
 interface NewsDetailPageProps {
@@ -95,6 +96,7 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
 
   const featuredImage = item.featuredImage as Media | undefined
   const author = item.author as User | undefined
+  const featuredImageUrl = getMediaUrl(featuredImage)
 
   return (
     <article className="section">
@@ -123,11 +125,11 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
         </header>
 
         {/* Featured Image */}
-        {featuredImage && (
+        {featuredImageUrl && (
           <div className="relative aspect-video rounded-lg overflow-hidden mb-8">
             <Image
-              src={featuredImage.url || ''}
-              alt={featuredImage.alt || item.title || ''}
+              src={featuredImageUrl}
+              alt={featuredImage?.alt || item.title || ''}
               fill
               className="object-cover"
               priority

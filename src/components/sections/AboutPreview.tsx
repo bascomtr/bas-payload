@@ -23,7 +23,7 @@ export function AboutPreview({ locale, dict }: AboutPreviewProps) {
           <div className="relative">
             <div className="about-image">
               <Image
-                src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&h=600&fit=crop"
+                src="/factory.jpg"
                 alt="BAS Endüstriyel Üretim Tesisi"
                 fill
                 className="object-cover"

@@ -6,6 +6,7 @@ import config from '@payload-config'
 import { type Locale, locales, getTranslatedPath } from '@/i18n/config'
 import { getDictionary } from '@/i18n/dictionaries'
 import { RichText } from '@/components/ui/RichText'
+import { getMediaUrl } from '@/lib/media'
 import type { Media } from '@/payload-types'
 
 interface ProjectPageProps {
@@ -78,15 +79,16 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   }
 
   const featuredImage = project.featuredImage as Media | undefined
+  const featuredImageUrl = getMediaUrl(featuredImage)
 
   return (
     <article>
       {/* Hero Section */}
-      {featuredImage && (
+      {featuredImageUrl && (
         <div className="relative h-[400px] lg:h-[500px]">
           <Image
-            src={featuredImage.url || ''}
-            alt={featuredImage.alt || project.title || ''}
+            src={featuredImageUrl}
+            alt={featuredImage?.alt || project.title || ''}
             fill
             className="object-cover"
             priority

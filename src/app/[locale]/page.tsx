@@ -3,7 +3,7 @@ import config from '@payload-config'
 import { type Locale } from '@/i18n/config'
 import { getDictionary } from '@/i18n/dictionaries'
 import { HeroSlider } from '@/components/sections/HeroSlider'
-import { Stats } from '@/components/sections/Stats'
+import { WhyBAS } from '@/components/sections/WhyBAS'
 import { CategoryGrid } from '@/components/sections/CategoryGrid'
 import { AboutPreview } from '@/components/sections/AboutPreview'
 import { FeaturedProducts } from '@/components/sections/FeaturedProducts'
@@ -28,12 +28,16 @@ export default async function HomePage({ params }: HomePageProps) {
     depth: 2,
   })
 
-  // Fetch product categories
+  // Fetch equipment categories (only those with images, sorted by order)
   const productCategories = await payload.find({
     collection: 'product-categories',
     locale,
+    where: {
+      image: { exists: true },
+    },
     limit: 6,
     sort: 'order',
+    depth: 1,
   })
 
   // Fetch featured products if enabled
@@ -82,13 +86,6 @@ export default async function HomePage({ params }: HomePageProps) {
       })
     : null
 
-  // Stats data
-  const stats = [
-    { value: '25+', label: locale === 'tr' ? 'Yıllık Deneyim' : 'Years Experience' },
-    { value: '500+', label: locale === 'tr' ? 'Tamamlanan Proje' : 'Completed Projects' },
-    { value: '50+', label: locale === 'tr' ? 'Ülkeye İhracat' : 'Export Countries' },
-    { value: '100+', label: locale === 'tr' ? 'Aktif Müşteri' : 'Active Clients' },
-  ]
 
   return (
     <>
@@ -99,18 +96,15 @@ export default async function HomePage({ params }: HomePageProps) {
         <HeroSlider slides={[]} locale={locale} />
       )}
 
-      {/* Stats Section */}
-      <Stats 
-        heading={locale === 'tr' ? 'Rakamlarla BAS' : 'BAS in Numbers'} 
-        stats={stats} 
-      />
+      {/* Why BAS Section */}
+      <WhyBAS locale={locale} />
 
       {/* Categories Section */}
       {productCategories.docs.length > 0 && (
         <CategoryGrid
           categories={productCategories.docs}
           locale={locale}
-          title={locale === 'tr' ? 'Ürün Kategorilerimiz' : 'Our Product Categories'}
+          title={locale === 'tr' ? 'Ekipmanlarımız' : 'Our Equipment'}
         />
       )}
 

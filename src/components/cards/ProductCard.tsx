@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { type Locale, getTranslatedPath, getLocalePath } from '@/i18n/config'
+import { getMediaUrl } from '@/lib/media'
 import type { Product, Media, ProductCategory } from '@/payload-types'
 
 interface ProductCardProps {
@@ -12,15 +13,16 @@ export function ProductCard({ product, locale }: ProductCardProps) {
   const featuredImage = product.featuredImage as Media | undefined
   const category = product.category as ProductCategory | undefined
   const href = getLocalePath(locale, `/${getTranslatedPath('products', locale)}/${product.slug}`)
+  const imageUrl = getMediaUrl(featuredImage)
 
   return (
     <Link href={href} className="card group">
       {/* Image */}
       <div className="card-image">
-        {featuredImage?.url ? (
+        {imageUrl ? (
           <Image
-            src={featuredImage.url}
-            alt={featuredImage.alt || product.title || ''}
+            src={imageUrl}
+            alt={featuredImage?.alt || product.title || ''}
             fill
             className="object-cover transition-transform duration-500 group-hover:scale-110"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"

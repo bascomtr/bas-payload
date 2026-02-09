@@ -65,7 +65,7 @@ export function HeroSlider({ slides, locale }: HeroSliderProps) {
   }
 
   return (
-    <section className="relative h-screen min-h-[600px] max-h-[900px] overflow-hidden">
+    <section className="hero-slider">
       {/* Slides */}
       {slides.map((slide, index) => {
         const bgImage = slide.backgroundImage as Media | undefined
@@ -74,9 +74,7 @@ export function HeroSlider({ slides, locale }: HeroSliderProps) {
         return (
           <div
             key={index}
-            className={`absolute inset-0 transition-all duration-[600ms] ${
-              isActive ? 'opacity-100 visible' : 'opacity-0 invisible'
-            }`}
+            className={`hero-slider__slide ${isActive ? 'hero-slider__slide--active' : ''}`}
             aria-hidden={!isActive}
           >
             {/* Background Image */}
@@ -85,78 +83,54 @@ export function HeroSlider({ slides, locale }: HeroSliderProps) {
                 src={bgImage.url}
                 alt={bgImage.alt || slide.heading || ''}
                 fill
-                className="object-cover"
+                className="hero-slider__bg"
                 priority={index === 0}
                 sizes="100vw"
               />
             ) : (
-              <div className="absolute inset-0 bg-linear-to-br from-secondary to-primary" />
+              <div className="hero-slider__bg-fallback" />
             )}
 
-            {/* Gradient Overlay */}
-            <div className="absolute inset-0 bg-linear-to-br from-secondary/85 via-primary-dark/60 to-primary/40" />
+            {/* Overlay */}
+            <div className="hero-slider__overlay" />
 
             {/* Content */}
-            <div className="absolute inset-0 flex items-center z-10">
-              <div className="container">
-                <div className="max-w-3xl text-white">
-                  {slide.heading && (
-                    <h1 
-                      className={`text-3xl md:text-4xl lg:text-5xl font-bold leading-tight mb-6 drop-shadow-md ${
-                        isActive ? 'animate-slide-up' : ''
-                      }`}
-                    >
-                      {slide.heading}
-                    </h1>
-                  )}
-                  {slide.subheading && (
-                    <p 
-                      className={`text-lg md:text-xl opacity-95 mb-8 max-w-2xl leading-relaxed ${
-                        isActive ? 'animate-slide-up animation-delay-200' : ''
-                      }`}
-                    >
-                      {slide.subheading}
-                    </p>
-                  )}
-                  {slide.buttonLabel && slide.buttonLink && (
-                    <div className={`flex flex-wrap gap-4 ${isActive ? 'animate-slide-up animation-delay-300' : ''}`}>
-                      <Link
-                        href={slide.buttonLink.startsWith('/') ? slide.buttonLink : `/${locale}${slide.buttonLink}`}
-                        className="btn btn-primary btn-lg"
-                      >
-                        {slide.buttonLabel}
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                        </svg>
-                      </Link>
-                      <Link href={getLocalePath(locale, '/hakkimizda')} className="btn btn-outline btn-lg">
-                        Daha Fazla Bilgi
-                      </Link>
-                    </div>
-                  )}
+            <div className="hero-slider__content">
+              {slide.heading && (
+                <h1 className={`hero-slider__heading ${isActive ? 'animate-slide-up' : ''}`}>
+                  {slide.heading}
+                </h1>
+              )}
+              {slide.subheading && (
+                <p className={`hero-slider__subheading ${isActive ? 'animate-slide-up animation-delay-200' : ''}`}>
+                  {slide.subheading}
+                </p>
+              )}
+              {slide.buttonLabel && slide.buttonLink && (
+                <div className={`hero-slider__cta ${isActive ? 'animate-slide-up animation-delay-300' : ''}`}>
+                  <Link
+                    href={slide.buttonLink.startsWith('/') ? slide.buttonLink : `/${locale}${slide.buttonLink}`}
+                    className="hero-slider__btn"
+                  >
+                    {slide.buttonLabel}
+                  </Link>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         )
       })}
 
-      {/* Slide Indicators */}
+      {/* Dot Indicators */}
       {slides.length > 1 && (
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-3 z-20">
+        <div className="hero-slider__dots">
           {slides.map((_, index) => (
             <button
               key={index}
               onClick={() => goToSlide(index)}
-              className={`w-12 h-1 rounded-full overflow-hidden transition-all ${
-                index === currentSlide ? 'bg-white/50' : 'bg-white/30'
-              }`}
+              className={`hero-slider__dot ${index === currentSlide ? 'hero-slider__dot--active' : ''}`}
               aria-label={`Slayt ${index + 1}'e git`}
-            >
-              {index === currentSlide && (
-                <span className="block h-full bg-primary rounded-full animate-progress" />
-              )}
-            </button>
+            />
           ))}
         </div>
       )}
@@ -164,34 +138,18 @@ export function HeroSlider({ slides, locale }: HeroSliderProps) {
       {/* Navigation Arrows */}
       {slides.length > 1 && (
         <>
-          <button
-            onClick={prevSlide}
-            className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-white hover:bg-primary hover:border-primary transition-all z-20"
-            aria-label="Önceki slayt"
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          <button onClick={prevSlide} className="hero-slider__arrow hero-slider__arrow--prev" aria-label="Önceki slayt">
+            <svg width="20" height="36" viewBox="0 0 20 36" fill="none">
+              <path d="M18 2L2 18L18 34" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </button>
-          <button
-            onClick={nextSlide}
-            className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-white hover:bg-primary hover:border-primary transition-all z-20"
-            aria-label="Sonraki slayt"
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          <button onClick={nextSlide} className="hero-slider__arrow hero-slider__arrow--next" aria-label="Sonraki slayt">
+            <svg width="20" height="36" viewBox="0 0 20 36" fill="none">
+              <path d="M2 2L18 18L2 34" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </button>
         </>
       )}
-
-      {/* Scroll Down Indicator */}
-      <div className="hidden md:flex absolute bottom-8 right-8 flex-col items-center gap-2 text-white text-xs uppercase tracking-wider z-20">
-        <span>Keşfet</span>
-        <svg className="w-5 h-5 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-        </svg>
-      </div>
     </section>
   )
 }

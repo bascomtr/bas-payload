@@ -37,6 +37,21 @@ export const ProductCategories: CollectionConfig = {
     },
     slugField({ fieldToUse: 'title' }),
     {
+      name: 'shortDescription',
+      type: 'textarea',
+      localized: true,
+      label: {
+        en: 'Short Description',
+        tr: 'Kısa Açıklama',
+      },
+      admin: {
+        description: {
+          en: 'Brief description shown on hover in category cards',
+          tr: 'Kategori kartlarında hover durumunda gösterilen kısa açıklama',
+        },
+      },
+    },
+    {
       name: 'description',
       type: 'richText',
       localized: true,

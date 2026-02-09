@@ -4,6 +4,12 @@
   "main": ".open-next/worker.js",
   "name": "bas-payload",
   "compatibility_date": "2025-08-15",
+  // Custom domain for Cloudflare Image Transformations
+  "routes": [
+    { "pattern": "demo.bas.com.tr", "custom_domain": true }
+  ],
+  // Keep workers.dev subdomain active too
+  "workers_dev": true,
   "compatibility_flags": [
     // Enable Node.js API
     // see https://developers.cloudflare.com/workers/configuration/compatibility-flags/#nodejs-compatibility-flag
@@ -21,7 +27,7 @@
       "binding": "D1",
       "database_id": "573af6c5-b30f-4a88-9a79-64602acf9237",
       "database_name": "bas-payload",
-      // Local D1 for development, R2 stays remote
+      "remote": true
     },
   ],
   "services": [

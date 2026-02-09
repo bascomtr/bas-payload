@@ -30,7 +30,9 @@
     "test": "pnpm run test:int && pnpm run test:e2e",
     "test:e2e": "cross-env NODE_OPTIONS=\"--no-deprecation --no-experimental-strip-types\" pnpm exec playwright test",
     "test:int": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts",
-    "migrate:menu": "cross-env PAYLOAD_SEED=true NODE_OPTIONS=--no-deprecation npx tsx src/seed/wp-menu-slider-migration.ts"
+    "migrate:menu": "cross-env PAYLOAD_SEED=true NODE_OPTIONS=--no-deprecation npx tsx src/seed/wp-menu-slider-migration.ts",
+    "fix:content": "cross-env NODE_OPTIONS=--no-deprecation npx tsx src/seed/fix-missing-content.ts",
+    "sync:videos": "cross-env NODE_OPTIONS=--no-deprecation npx tsx src/seed/sync-youtube-videos.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.972.0",
@@ -59,6 +61,7 @@
     "autoprefixer": "^10.4.23",
     "eslint": "^9.16.0",
     "eslint-config-next": "15.4.7",
+    "form-data": "^4.0.5",
     "jsdom": "26.1.0",
     "playwright": "1.56.1",
     "playwright-core": "1.56.1",

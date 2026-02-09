@@ -379,11 +379,27 @@ async function migrateFromWordPressAPI() {
         return null
       }
 
+      // Create Payload media record with file upload
+      const fileBuffer = fs.readFileSync(tempPath)
+      const mediaDoc = await payload.create({
+        collection: 'media',
+        data: {
+          alt: altText || filename.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' '),
+        },
+        file: {
+          data: fileBuffer,
+          mimetype: mimetype,
+          name: filename,
+          size: fileSize,
+        },
+      })
+
       fs.unlinkSync(tempPath)
       
-      // Store in cache with a placeholder - actual Payload records will be created in production
-      mediaCache.set(imageUrl, `r2:${r2Key}`)
-      return null // Return null since we don't have a Payload ID yet
+      const id = String(mediaDoc.id)
+      mediaCache.set(imageUrl, id)
+      console.log(`  Created Payload media: ${filename} -> ${id}`)
+      return id
     } catch (error) {
       console.error(`  Failed to upload media: ${imageUrl}`, error)
       return null

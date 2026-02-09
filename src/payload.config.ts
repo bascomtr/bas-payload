@@ -38,6 +38,7 @@ const cloudflare =
     : await getCloudflareContext({ async: true })
 
 export default buildConfig({
+  serverURL: process.env.PAYLOAD_PUBLIC_SERVER_URL || 'https://demo.bas.com.tr',
   admin: {
     user: Users.slug,
     importMap: {
